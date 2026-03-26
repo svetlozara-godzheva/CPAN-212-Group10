@@ -1,0 +1,17 @@
+<%- include("partials/header",{showNavigation:false}) %>
+
+    <h1>Registration</h1>
+    <form method="post">
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+        <div class="button-container">
+            <button>Register</button>
+            <a href="/login">Log in</a>
+        </div>
+        <span id="registrationError">
+            <%=error%>
+        </span>
+    </form>
+    <%- include("partials/footer") %>

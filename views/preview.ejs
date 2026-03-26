@@ -1,0 +1,26 @@
+<%- include("partials/header",{showNavigation:true}) %>
+
+    <h1>
+        <%= movie.name%> - <%= movie.year%>
+    </h1>
+    <hr />
+    <p>
+        <%= movie.rating%>
+    </p>
+    <p>
+        <%= movie.genres%>
+    </p>
+    <p>
+        <%= movie.director%>
+    </p>
+    <p>
+        <%= movie.description%>
+    </p>
+    <hr />
+    <a href="/edit/<%=movie._id%>">Edit</a>
+    <form action="/delete/<%=movie._id%>" method="post">
+        <button>
+            Delete
+        </button>
+    </form>
+    <%- include("partials/footer") %>

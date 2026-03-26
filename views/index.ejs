@@ -1,0 +1,20 @@
+<%- include("partials/header",{showNavigation:true}) %>
+
+    <h1>Movies</h1>
+
+    <a href="/create">Create New Movie</a>
+    <hr />
+    <div class="movies">
+
+        <%movies.forEach(movie=> {%>
+            <div class="movie">
+                <a href="/preview/<%=movie._id%>">
+                    <%=movie.name%>
+                </a>
+            </div>
+            <%});%>
+
+
+    </div>
+
+    <%- include("partials/footer") %>
