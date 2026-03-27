@@ -6,15 +6,17 @@
         <label for="title">Title:</label>
         <input type="text" name="name" placeholder="Movie Title" value="<%=movie.name%>" required>
         <label for="year">Year:</label>
-        <input type="text" name="year" placeholder="Year" value="<%=movie.year%>" required>
+        <input type="number" name="year" placeholder="Year" value="<%=movie.year%>" required>
         <label for="rating">Rating:</label>
-        <input type="text" name="rating" placeholder="Rating" value="<%=movie.rating%>" required>
+        <input type="number" name="rating" placeholder="Rating" value="<%=movie.rating%>" required>
         <label for="genres">Genres:</label>
         <input type="text" name="genres" placeholder="Genres" value="<%=movie.genres%>" required>
         <label for="director">Director:</label>
         <input type="text" name="director" placeholder="Director" value="<%=movie.director%>" required>
         <label for="description">Description:</label>
-        <input type="text" name="description" placeholder="Description" value="<%=movie.description%>" required>
+        <textarea type="text" name="description" placeholder="Description" rows="4"
+            required><%=movie.description%></textarea>
+
         <div class="button-container">
             <button class="button">Save</button>
         </div>

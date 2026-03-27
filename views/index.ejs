@@ -2,12 +2,10 @@
 
     <div class="title-container">
         <h1 class="page-title">Movies</h1>
-
         <a class="button" href="/create">Create New Movie</a>
     </div>
     <hr />
     <div class="movies">
-
         <%movies.forEach(movie=> {%>
             <div class="movie">
                 <a href="/preview/<%=movie._id%>">
@@ -15,8 +13,6 @@
                 </a>
             </div>
             <%});%>
-
-
     </div>
 
     <%- include("partials/footer") %>
