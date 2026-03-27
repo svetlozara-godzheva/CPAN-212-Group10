@@ -1,25 +1,22 @@
 <%- include("partials/header",{showNavigation:true}) %>
 
-    <h1>
-        <%= movie.name%> - <%= movie.year%>
+    <h1 class="page-title">
+        <%= movie.name%> (<%= movie.year%>)
     </h1>
     <hr />
-    <p>
-        <%= movie.rating%>
-    </p>
-    <p>
-        <%= movie.genres%>
-    </p>
-    <p>
-        <%= movie.director%>
-    </p>
-    <p>
+    <span class="movie-metadata pills">
+        <%= movie.rating%> | <%= movie.genres%>
+    </span>
+    <span class="movie-director">
+        Director: <%= movie.director%>
+    </span>
+    <p class="movie-description">
         <%= movie.description%>
     </p>
     <hr />
-    <a href="/edit/<%=movie._id%>">Edit</a>
+    <a class="button" href="/edit/<%=movie._id%>">Edit</a>
     <form action="/delete/<%=movie._id%>" method="post">
-        <button>
+        <button class="button">
             Delete
         </button>
     </form>

@@ -1,16 +1,16 @@
 <%- include("partials/header",{showNavigation:false}) %>
 
-    <h1>Login Page</h1>
-    <form method="post">
+    <h1 class="page-title">Login</h1>
+    <form class="login-form" method="post">
         <label for="email">Email:</label>
         <input type="email" name="email" required>
         <label for="password">Password:</label>
         <input type="password" name="password" required>
         <div class="button-container">
-            <button>Log in</button>
-            <a href="/register">Register</a>
+            <button class="button">Log in</button>
+            <a class="button" href="/register">Register</a>
         </div>
-        <span id="passwordError">
+        <span class="error-message">
             <%=error%>
         </span>
     </form>
