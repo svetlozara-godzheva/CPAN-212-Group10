@@ -1,0 +1,22 @@
+# 1. Automatic line ending normalization for all text files
+* text=auto
+
+# 2. Force specific line endings for cross-platform consistency
+*.sh      text eol=lf
+*.bat     text eol=crlf
+
+# 3. Mark files as binary (prevents Git from trying to fix line endings or diffing them)
+*.jpg     binary
+*.png     binary
+*.gif     binary
+
+# 4. Use Git LFS (Large File Storage) for big assets
+*.psd     filter=lfs diff=lfs merge=lfs -text
+*.zip     filter=lfs diff=lfs merge=lfs -text
+
+# 5. Exclude files from 'git archive' (e.g., when creating a release zip)
+.gitignore     export-ignore
+/tests         export-ignore
+
+# 6. Customize GitHub's language statistics or diffs
+/dist/*        linguist-generated
