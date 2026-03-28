@@ -1,18 +1,28 @@
 <%- include("partials/header",{showNavigation:false}) %>
 
     <h1 class="page-title">Login</h1>
+
     <form class="login-form" method="post">
         <label for="email">Email:</label>
         <input type="email" name="email" required>
+
         <label for="password">Password:</label>
         <input type="password" name="password" required>
+
         <div class="button-container">
             <button class="button">Log in</button>
             <a class="button" href="/register">Register</a>
         </div>
-        <span class="error-message">
-            <%=error%>
-        </span>
+
+        <% if (successMessage) { %>
+            <p style="color: green; margin-top: 10px;">
+                <%= successMessage %>
+            </p>
+            <% } %>
+
+                <span class="error-message">
+                    <%= error %>
+                </span>
     </form>
 
     <%- include("partials/footer") %>
