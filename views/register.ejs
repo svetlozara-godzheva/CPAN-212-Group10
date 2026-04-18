@@ -4,21 +4,27 @@
 
     <form class="registration-form" method="post">
         <label for="email">Email:</label>
-        <input type="email" name="email" required>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-
-        <div class="button-container">
-            <button class="button">Register</button>
-            <a class="button" href="/login">Log in</a>
-        </div>
-
-        <% if (error) { %>
-            <p class="error-message">
-                <%= error %>
-            </p>
+        <input type="email" name="email" required value="<%= formData.email %>">
+        <% if (errors?.email) { %>
+            <span class="error-message">
+                <%= errors.email.msg %>
+            </span>
             <% } %>
+
+                <label for="password">Password:</label>
+                <input type="password" name="password" required>
+                <% if (errors?.password) { %>
+                    <span class="error-message">
+                        <%= errors.password.msg %>
+                    </span>
+                    <% } %>
+
+                        <div class="button-container">
+                            <button class="button">Register</button>
+                            <a class="button" href="/login">Log in</a>
+                        </div>
+
+
     </form>
 
     <%- include("partials/footer") %>

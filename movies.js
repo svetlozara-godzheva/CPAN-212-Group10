@@ -23,7 +23,7 @@ const movieValidation = [
     body("name").trim().notEmpty().withMessage("Movie title is required."),
     body("year")
         .isInt({ min: 1888, max: 2100 })
-        .withMessage("Year must be a valid number."),
+        .withMessage("Year must be between 1888 and 2100."),
     body("rating")
         .isFloat({ min: 0, max: 10 })
         .withMessage("Rating must be between 0 and 10."),
@@ -34,16 +34,6 @@ const movieValidation = [
         .notEmpty()
         .withMessage("Description is required."),
 ];
-
-const getValidationMessage = (request) => {
-    const errors = validationResult(request);
-
-    if (errors.isEmpty()) {
-        return null;
-    }
-
-    return errors.array().map((error) => error.msg).join(" ");
-};
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -84,7 +74,7 @@ router.get("/", requireLogin, async (request, response) => {
 
 router.get("/register", (request, response) => {
     try {
-        return response.render("register.ejs", { error: null });
+        return response.render("register.ejs", { errors: {}, formData: {} });
     } catch (error) {
         response.status(500).send(error);
     }
@@ -92,11 +82,12 @@ router.get("/register", (request, response) => {
 
 router.post("/register", registerValidation, async (request, response) => {
     try {
-        const validationMessage = getValidationMessage(request);
+        const errors = validationResult(request);
 
-        if (validationMessage) {
+        if (!errors.isEmpty()) {
             return response.render("register.ejs", {
-                error: validationMessage,
+                errors: errors.mapped(),
+                formData: request.body
             });
         }
 
@@ -106,7 +97,12 @@ router.post("/register", registerValidation, async (request, response) => {
 
         if (existingUsers.length > 0) {
             return response.render("register.ejs", {
-                error: "Username already exists!",
+                errors: {
+                    email: {
+                        msg: "Username already exists!"
+                    }
+                },
+                formData: request.body
             });
         }
 
@@ -131,8 +127,9 @@ router.get("/login", (request, response) => {
                 : null;
 
         return response.render("login.ejs", {
-            error: null,
+            errors: {},
             successMessage,
+            formData: {}
         });
     } catch (error) {
         response.status(500).send(error);
@@ -141,19 +138,20 @@ router.get("/login", (request, response) => {
 
 router.post("/login", loginValidation, async (request, response) => {
     try {
-        const validationMessage = getValidationMessage(request);
 
-        if (validationMessage) {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
             return response.render("login.ejs", {
-                error: validationMessage,
+                errors: errors.mapped(),
                 successMessage: null,
+                formData: request.body
             });
         }
 
         const existingUser = await User.findOne({
             email: request.body.email,
         });
-
+        console.log(request.body)
         if (existingUser) {
             const passwordMatch = await bcrypt.compare(
                 request.body.password,
@@ -166,8 +164,13 @@ router.post("/login", loginValidation, async (request, response) => {
         }
 
         return response.render("login.ejs", {
-            error: "Invalid username or password!",
+            errors: {
+                password: {
+                    msg: "Invalid username or password!"
+                }
+            },
             successMessage: null,
+            formData: request.body
         });
     } catch (error) {
         response.status(500).send(error);
@@ -185,7 +188,7 @@ router.get("/logout", (request, response) => {
 
 router.get("/create", requireLogin, (request, response) => {
     try {
-        return response.render("create.ejs", { error: null, formData: {} });
+        return response.render("create.ejs", { errors: {}, formData: {} });
     } catch (error) {
         response.status(500).send(error);
     }
@@ -193,11 +196,11 @@ router.get("/create", requireLogin, (request, response) => {
 
 router.post("/create", requireLogin, movieValidation, async (request, response) => {
     try {
-        const validationMessage = getValidationMessage(request);
 
-        if (validationMessage) {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
             return response.render("create.ejs", {
-                error: validationMessage,
+                errors: errors.mapped(),
                 formData: request.body,
             });
         }
@@ -226,7 +229,7 @@ router.get("/edit/:id", requireLogin, async (request, response) => {
         if (movie.createdBy !== request.session.currentUser) {
             return response.status(403).send("You can only modify movies you added.");
         }
-        return response.render("edit.ejs", { movie, error: null });
+        return response.render("edit.ejs", { movie, errors: {} });
 
     } catch (error) {
         response.status(500).send(error);
@@ -236,17 +239,16 @@ router.get("/edit/:id", requireLogin, async (request, response) => {
 router.post("/edit/:id", requireLogin, movieValidation, async (request, response) => {
     try {
         const id = request.params.id;
-        const validationMessage = getValidationMessage(request);
 
-        if (validationMessage) {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
             return response.render("edit.ejs", {
+                errors: errors.mapped(),
                 movie: { _id: id, ...request.body },
-                error: validationMessage,
             });
         }
+
         const movieToUpdate = await Movie.findById(id);
-
-
         if (movieToUpdate.createdBy !== request.session.currentUser) {
             return response.status(403).send("You can only modify movies you added.");
         }

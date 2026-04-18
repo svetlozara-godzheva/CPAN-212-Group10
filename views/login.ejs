@@ -4,25 +4,31 @@
 
     <form class="login-form" method="post">
         <label for="email">Email:</label>
-        <input type="email" name="email" required>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-
-        <div class="button-container">
-            <button class="button">Log in</button>
-            <a class="button" href="/register">Register</a>
-        </div>
-
-        <% if (successMessage) { %>
-            <p style="color: green; margin-top: 10px;">
-                <%= successMessage %>
-            </p>
+        <input type="email" name="email" required value="<%= formData.email %>">
+        <% if (errors?.email) { %>
+            <span class="error-message">
+                <%= errors.email.msg %>
+            </span>
             <% } %>
 
-                <span class="error-message">
-                    <%= error %>
-                </span>
+                <label for="password">Password:</label>
+                <input type="password" name="password" required>
+                <% if (errors?.password) { %>
+                    <span class="error-message">
+                        <%= errors.password.msg %>
+                    </span>
+                    <% } %>
+
+                        <div class="button-container">
+                            <button class="button">Log in</button>
+                            <a class="button" href="/register">Register</a>
+                        </div>
+
+                        <% if (successMessage) { %>
+                            <p style="color: green; margin-top: 10px;">
+                                <%= successMessage %>
+                            </p>
+                            <% } %>
     </form>
 
     <%- include("partials/footer") %>

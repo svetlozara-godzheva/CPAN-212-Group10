@@ -3,36 +3,61 @@
     <h1 class="page-title">Add a Movie</h1>
     <hr />
 
-    <% if (error) { %>
-        <p class="error-message">
-            <%= error %>
-        </p>
+
+
+    <form class="create-form" method="post">
+        <label for="title">Title:</label>
+        <input type="text" name="name" placeholder="Movie Title" value="<%= formData.name || '' %>" required>
+        <% if (errors?.name) { %>
+            <span class="error-message">
+                <%= errors.name.msg %>
+            </span>
         <% } %>
 
-            <form class="create-form" method="post">
-                <label for="title">Title:</label>
-                <input type="text" name="name" placeholder="Movie Title" value="<%= formData.name || '' %>" required>
+        <label for="year">Year:</label>
+        <input type="number" name="year" placeholder="Year" value="<%= formData.year || '' %>" required>
+        <% if (errors?.year) { %>
+            <span class="error-message">
+                <%= errors.year.msg %>
+            </span>
+        <% } %>
 
-                <label for="year">Year:</label>
-                <input type="number" name="year" placeholder="Year" value="<%= formData.year || '' %>" required>
+        <label for="rating">Rating:</label>
+        <input type="number" name="rating" placeholder="Rating" value="<%= formData.rating || '' %>" required>
+        <% if (errors?.rating) { %>
+            <span class="error-message">
+                <%= errors.rating.msg %>
+            </span>
+        <% } %>
 
-                <label for="rating">Rating:</label>
-                <input type="number" name="rating" placeholder="Rating" value="<%= formData.rating || '' %>" required>
+        <label for="genres">Genres:</label>
+        <input type="text" name="genres" placeholder="Genres" value="<%= formData.genres || '' %>" required>
+        <% if (errors?.genres) { %>
+            <span class="error-message">
+                <%= errors.genres.msg %>
+            </span>
+        <% } %>
 
-                <label for="genres">Genres:</label>
-                <input type="text" name="genres" placeholder="Genres" value="<%= formData.genres || '' %>" required>
+        <label for="director">Director:</label>
+        <input type="text" name="director" placeholder="Director" value="<%= formData.director || '' %>" required>
+        <% if (errors?.director) { %>
+            <span class="error-message">
+                <%= errors.director.msg %>
+            </span>
+        <% } %>
 
-                <label for="director">Director:</label>
-                <input type="text" name="director" placeholder="Director" value="<%= formData.director || '' %>"
-                    required>
+        <label for="description">Description:</label>
+        <textarea type="text" name="description" placeholder="Description" rows="4"
+            required><%= formData.description || "" %></textarea>
+        <% if (errors?.description) { %>
+            <span class="error-message">
+                <%= errors.description.msg %>
+            </span>
+        <% } %>
 
-                <label for="description">Description:</label>
-                <textarea type="text" name="description" placeholder="Description" rows="4"
-                    required><%= formData.description || "" %></textarea>
+        <div class="button-container">
+            <button class="button">Create</button>
+        </div>
+    </form>
 
-                <div class="button-container">
-                    <button class="button">Create</button>
-                </div>
-            </form>
-
-            <%- include("partials/footer") %>
+    <%- include("partials/footer") %>
