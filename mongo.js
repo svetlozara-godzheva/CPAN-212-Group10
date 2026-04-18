@@ -20,10 +20,26 @@ const userSchema = new Schema({
 
 const User = mongoose.model("User", userSchema);
 
+
+//caching this to be able to host on vercel
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
+
 const connectDB = async () => {
+    if (cached.conn) return cached.conn;
     try {
         console.log("Attempting to connect to database");
-        await mongoose.connect(process.env.MONGODB_URI || process.env.CONNECTION_STRING);
+        const uri = process.env.MONGODB_URI || process.env.CONNECTION_STRING;
+        if (!cached.promise) {
+            cached.promise = mongoose.connect(uri).then((mongooseInstance) => mongooseInstance);
+        }
+
+        cached.conn = await cached.promise;
+        return cached.conn;
+
         console.log("MongoDB connected!");
     } catch (error) {
         console.error(error.message);

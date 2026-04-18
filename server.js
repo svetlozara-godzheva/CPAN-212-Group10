@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const onServerStart = () => {
     console.log(`The server is running on http://localhost:${port}`);
-    connectDB();
+   
 };
 
 app.use(moviesRouter);

@@ -1,8 +1,7 @@
 const express = require("express");
-const { Movie, User } = require("./mongo");
+const { Movie, User, connectDB } = require("./mongo");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
-
 const saltRounds = 12;
 
 const router = express.Router();
@@ -18,6 +17,15 @@ router.use(
     }),
 );
 
+router.use(async (req, res, next) => {
+    try {
+        // needed for vercel
+        await connectDB();
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 const requireLogin = (request, response, next) => {
     if (!request.session.currentUser) {
         return response.redirect("/login");
