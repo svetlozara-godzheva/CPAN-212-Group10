@@ -30,7 +30,10 @@ if (!cached) {
 }
 
 const connectDB = async () => {
-    if (cached.conn) return cached.conn;
+    if (cached.conn) {
+        return cached.conn;
+    }
+
     try {
         console.log("Attempting to connect to database");
         const uri = process.env.MONGODB_URI || process.env.CONNECTION_STRING;

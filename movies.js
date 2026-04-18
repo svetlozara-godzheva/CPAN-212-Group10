@@ -17,7 +17,7 @@ router.use(
     }),
 );
 
-router.use(async (req, res, next) => {
+router.use(async (request, response, next) => {
     try {
         // needed for vercel
         await connectDB();
