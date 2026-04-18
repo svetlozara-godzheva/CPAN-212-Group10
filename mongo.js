@@ -8,7 +8,8 @@ const movieSchema = new Schema({
     year: Number,
     genres: String,
     rating: Number,
-    director: String
+    director: String,
+    createdBy: String,
 });
 
 const Movie = mongoose.model("Movie", movieSchema);

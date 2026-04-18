@@ -144,6 +144,7 @@ router.post("/create", requireLogin, async (request, response) => {
             genres: request.body.genres,
             director: request.body.director,
             description: request.body.description,
+            createdBy: request.session.currentUser,
         });
         const createdMovie = await movie.save();
         return response.redirect(`/preview/${createdMovie._id}`);
@@ -156,6 +157,11 @@ router.get("/edit/:id", requireLogin, async (request, response) => {
     try {
         const id = request.params.id;
         const movie = await Movie.findById(id);
+
+        if (movie.createdBy !== request.session.currentUser) {
+            return response.status(403).send("You can only modify movies you added.");
+        }
+
         return response.render("edit.ejs", { movie });
     } catch (error) {
         response.status(500).send(error);
@@ -166,8 +172,13 @@ router.post("/edit/:id", requireLogin, async (request, response) => {
     try {
         console.log(request.body);
         const id = request.params.id;
-
         const movieToUpdate = await Movie.findById(id);
+
+
+        if (movieToUpdate.createdBy !== request.session.currentUser) {
+            return response.status(403).send("You can only modify movies you added.");
+        }
+
         movieToUpdate.name = request.body.name;
         movieToUpdate.year = request.body.year;
         movieToUpdate.rating = request.body.rating;
@@ -185,6 +196,11 @@ router.post("/delete/:id", requireLogin, async (request, response) => {
     try {
         const id = request.params.id;
         const movie = await Movie.findById(id);
+
+        if (movie.createdBy !== request.session.currentUser) {
+            return response.status(403).send("You can only modify movies you added.");
+        }
+
         await movie.deleteOne();
         return response.redirect("/");
     } catch (error) {
@@ -196,7 +212,10 @@ router.get("/preview/:id", requireLogin, async (request, response) => {
     try {
         const id = request.params.id;
         const movie = await Movie.findById(id);
-        return response.render("preview.ejs", { movie });
+        return response.render("preview.ejs", {
+            movie,
+            canManage: movie && movie.createdBy === request.session.currentUser,
+        });
     } catch (error) {
         response.status(500).send(error);
     }
