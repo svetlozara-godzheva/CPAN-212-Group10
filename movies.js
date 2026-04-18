@@ -2,9 +2,48 @@ const express = require("express");
 const { Movie, User, connectDB } = require("./mongo");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require("express-validator");
 const saltRounds = 12;
 
 const router = express.Router();
+
+const registerValidation = [
+    body("email").trim().isEmail().withMessage("Please enter a valid email address."),
+    body("password")
+        .isLength({ min: 6 })
+        .withMessage("Password must be at least 6 characters long."),
+];
+
+const loginValidation = [
+    body("email").trim().isEmail().withMessage("Please enter a valid email address."),
+    body("password").notEmpty().withMessage("Password is required."),
+];
+
+const movieValidation = [
+    body("name").trim().notEmpty().withMessage("Movie title is required."),
+    body("year")
+        .isInt({ min: 1888, max: 2100 })
+        .withMessage("Year must be a valid number."),
+    body("rating")
+        .isFloat({ min: 0, max: 10 })
+        .withMessage("Rating must be between 0 and 10."),
+    body("genres").trim().notEmpty().withMessage("Genres are required."),
+    body("director").trim().notEmpty().withMessage("Director is required."),
+    body("description")
+        .trim()
+        .notEmpty()
+        .withMessage("Description is required."),
+];
+
+const getValidationMessage = (request) => {
+    const errors = validationResult(request);
+
+    if (errors.isEmpty()) {
+        return null;
+    }
+
+    return errors.array().map((error) => error.msg).join(" ");
+};
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -51,8 +90,16 @@ router.get("/register", (request, response) => {
     }
 });
 
-router.post("/register", async (request, response) => {
+router.post("/register", registerValidation, async (request, response) => {
     try {
+        const validationMessage = getValidationMessage(request);
+
+        if (validationMessage) {
+            return response.render("register.ejs", {
+                error: validationMessage,
+            });
+        }
+
         const existingUsers = await User.find({
             email: request.body.email,
         });
@@ -92,8 +139,17 @@ router.get("/login", (request, response) => {
     }
 });
 
-router.post("/login", async (request, response) => {
+router.post("/login", loginValidation, async (request, response) => {
     try {
+        const validationMessage = getValidationMessage(request);
+
+        if (validationMessage) {
+            return response.render("login.ejs", {
+                error: validationMessage,
+                successMessage: null,
+            });
+        }
+
         const existingUser = await User.findOne({
             email: request.body.email,
         });
@@ -129,14 +185,23 @@ router.get("/logout", (request, response) => {
 
 router.get("/create", requireLogin, (request, response) => {
     try {
-        return response.render("create.ejs");
+        return response.render("create.ejs", { error: null, formData: {} });
     } catch (error) {
         response.status(500).send(error);
     }
 });
 
-router.post("/create", requireLogin, async (request, response) => {
+router.post("/create", requireLogin, movieValidation, async (request, response) => {
     try {
+        const validationMessage = getValidationMessage(request);
+
+        if (validationMessage) {
+            return response.render("create.ejs", {
+                error: validationMessage,
+                formData: request.body,
+            });
+        }
+
         const movie = new Movie({
             name: request.body.name,
             year: request.body.year,
@@ -161,17 +226,24 @@ router.get("/edit/:id", requireLogin, async (request, response) => {
         if (movie.createdBy !== request.session.currentUser) {
             return response.status(403).send("You can only modify movies you added.");
         }
+        return response.render("edit.ejs", { movie, error: null });
 
-        return response.render("edit.ejs", { movie });
     } catch (error) {
         response.status(500).send(error);
     }
 });
 
-router.post("/edit/:id", requireLogin, async (request, response) => {
+router.post("/edit/:id", requireLogin, movieValidation, async (request, response) => {
     try {
-        console.log(request.body);
         const id = request.params.id;
+        const validationMessage = getValidationMessage(request);
+
+        if (validationMessage) {
+            return response.render("edit.ejs", {
+                movie: { _id: id, ...request.body },
+                error: validationMessage,
+            });
+        }
         const movieToUpdate = await Movie.findById(id);
 
 
