@@ -2,21 +2,37 @@
 
     <h1 class="page-title">Add a Movie</h1>
     <hr />
-    <form class="create-form" method="post">
-        <label for="title">Title:</label>
-        <input type="text" name="name" placeholder="Movie Title" required>
-        <label for="year">Year:</label>
-        <input type="number" name="year" placeholder="Year" required>
-        <label for="rating">Rating:</label>
-        <input type="number" name="rating" placeholder="Rating" required>
-        <label for="genres">Genres:</label>
-        <input type="text" name="genres" placeholder="Genres" required>
-        <label for="director">Director:</label>
-        <input type="text" name="director" placeholder="Director" required>
-        <label for="description">Description:</label>
-        <textarea type="text" name="description" placeholder="Description" rows="4" required></textarea>
-        <div class="button-container">
-            <button class="button">Create</button>
-        </div>
-    </form>
-    <%- include("partials/footer") %>
+
+    <% if (error) { %>
+        <p class="error-message">
+            <%= error %>
+        </p>
+        <% } %>
+
+            <form class="create-form" method="post">
+                <label for="title">Title:</label>
+                <input type="text" name="name" placeholder="Movie Title" value="<%= formData.name || '' %>" required>
+
+                <label for="year">Year:</label>
+                <input type="number" name="year" placeholder="Year" value="<%= formData.year || '' %>" required>
+
+                <label for="rating">Rating:</label>
+                <input type="number" name="rating" placeholder="Rating" value="<%= formData.rating || '' %>" required>
+
+                <label for="genres">Genres:</label>
+                <input type="text" name="genres" placeholder="Genres" value="<%= formData.genres || '' %>" required>
+
+                <label for="director">Director:</label>
+                <input type="text" name="director" placeholder="Director" value="<%= formData.director || '' %>"
+                    required>
+
+                <label for="description">Description:</label>
+                <textarea type="text" name="description" placeholder="Description" rows="4"
+                    required><%= formData.description || "" %></textarea>
+
+                <div class="button-container">
+                    <button class="button">Create</button>
+                </div>
+            </form>
+
+            <%- include("partials/footer") %>
