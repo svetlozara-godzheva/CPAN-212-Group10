@@ -23,7 +23,7 @@ const User = mongoose.model("User", userSchema);
 const connectDB = async () => {
     try {
         console.log("Attempting to connect to database");
-        await mongoose.connect(process.env.CONNECTION_STRING);
+        await mongoose.connect(process.env.CONNECTION_STRING || process.env.MONGODB_URI);
         console.log("MongoDB connected!");
     } catch (error) {
         console.error(error.message);

@@ -112,7 +112,7 @@ router.post("/login", async (request, response) => {
 
 router.get("/logout", (request, response) => {
     try {
-        request.session.currentUser = null;
+        request.session.destroy();
         return response.redirect("/login");
     } catch (error) {
         response.status(500).send(error);
